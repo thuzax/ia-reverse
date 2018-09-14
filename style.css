@@ -1,0 +1,46 @@
+#body {
+    background-color: #c99043;
+}
+
+#titulo {
+    color: white;
+}
+
+#tabuleiro {
+    margin-left: 33%;
+    width:400px;
+    height:407px;
+    border:solid 1px;
+}
+
+.linha{ 
+    height:50px;
+}
+
+.casa{
+    width:50px;
+    height:100%;    
+    float:left;
+    cursor: pointer;
+}
+
+.casa_branca{
+    background-color: green;
+}
+
+.casa_preta{
+    background-color: green;
+}
+
+.linhaSeparadora {
+    border-bottom: 1px solid white;
+    width: 400px;
+    position: relative;
+}
+
+.colunaSeparadora {
+    height: 50px;
+    border-bottom: 1px solid white;
+    width: 1px;
+
+}
