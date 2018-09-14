@@ -112,6 +112,7 @@ class Tabuleiro:
         self.substituiDiagonalSubindoEsquerda(jogador, linha, coluna)
         self.substituiDiagonalDescendoDireita(jogador, linha, coluna)
         self.substituiDiagonalSubindoDireita(jogador, linha, coluna)
+        self.substituiDiagonalDescendoEsquerda(jogador, linha, coluna)
 
     def substituiDiagonalSubindoEsquerda(self, jogador, linha, coluna):
         if((coluna <= 0) or (linha <= 0) or self.tabuleiro[linha-1][coluna-1] == "v"):
@@ -135,7 +136,7 @@ class Tabuleiro:
             return False
         
         if(self.tabuleiro[linha+1][coluna+1] != jogador):
-            achou = self.substituiDiagonalSubindoEsquerda(jogador, linha + 1, coluna + 1)
+            achou = self.substituiDiagonalDescendoDireita(jogador, linha + 1, coluna + 1)
             if(achou):
                 self.tabuleiro[linha+1][coluna+1] = jogador
             return achou
@@ -150,12 +151,27 @@ class Tabuleiro:
                 or self.tabuleiro[linha-1][coluna+1] == "v"):
             return False
         if(self.tabuleiro[linha-1][coluna+1] != jogador):
-            achou = self.substituiDiagonalSubindoDireita(jogador, linha-1, coluna + 1)
+            achou = self.substituiDiagonalSubindoDireita(jogador, linha - 1, coluna + 1)
             if(achou):
                 self.tabuleiro[linha-1][coluna+1] = jogador
             return achou
         
         elif(self.tabuleiro[linha-1][coluna+1] == jogador):
+            return True
+
+        return False
+
+    def substituiDiagonalDescendoEsquerda(self, jogador, linha, coluna):
+        if((coluna <= 0) or (linha >= (len(self.tabuleiro) - 1)) 
+                or self.tabuleiro[linha+1][coluna-1] == "v"):
+            return False
+        if(self.tabuleiro[linha+1][coluna-1] != jogador):
+            achou = self.substituiDiagonalDescendoEsquerda(jogador, linha + 1, coluna - 1)
+            if(achou):
+                self.tabuleiro[linha+1][coluna-1] = jogador
+            return achou
+        
+        elif(self.tabuleiro[linha+1][coluna-1] == jogador):
             return True
 
         return False
