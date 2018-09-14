@@ -9,6 +9,7 @@ def main():
     j = 0
     cont = 0
     while(i != -1 and j != -1):
+        print(tabuleiro.pontuacao)
         i = int(input())
         j = int(input())
         jogador = "P"

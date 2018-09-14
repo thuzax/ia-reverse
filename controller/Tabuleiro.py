@@ -1,11 +1,13 @@
 class Tabuleiro:
     tabuleiro = None
     tamanho = None
+    pontuacao = None
 
     def __init__(self, tamanho):
         self.tamanho = tamanho
         self.montarTabuleiro()
         self.colocarPecasIniciais()
+        self.pontuacao = {"P": 2, "B": 2}
 
     def montarTabuleiro(self):
         self.tabuleiro = []
@@ -31,25 +33,30 @@ class Tabuleiro:
             return "ocupado"
         
         self.tabuleiro[linha][coluna] = jogador
-        self.substituiVertical(jogador, linha, coluna)
-        self.substituiHorizontal(jogador, linha, coluna)
-        self.substituiDiagonal(jogador, linha, coluna)
+        self.pontuacao[jogador] += 1
+        outroJogador = "P" if(jogador == "B") else "B"
+        
+        self.substituiVertical(jogador, outroJogador, linha, coluna)
+        self.substituiHorizontal(jogador, outroJogador, linha, coluna)
+        self.substituiDiagonal(jogador, outroJogador, linha, coluna)
 
-    def substituiVertical(self, jogador, linha, coluna):
-        self.substituiSubindo(jogador, linha, coluna)
-        self.substituiDescendo(jogador, linha, coluna)
+    def substituiVertical(self, jogador, outroJogador, linha, coluna):
+        self.substituiSubindo(jogador, outroJogador, linha, coluna)
+        self.substituiDescendo(jogador, outroJogador, linha, coluna)
         
         return False
 
-    def substituiSubindo(self, jogador, linha, coluna):
+    def substituiSubindo(self, jogador, outroJogador, linha, coluna):
         if((linha <= 0) or (self.tabuleiro[linha-1][coluna] == "v")):
             return False
         
-        if(self.tabuleiro[linha-1][coluna] != jogador):
-            achou = self.substituiSubindo(jogador, linha - 1, coluna)
+        if(self.tabuleiro[linha-1][coluna] == outroJogador):
+            achou = self.substituiSubindo(jogador, outroJogador, linha - 1, coluna)
             
             if(achou):
                 self.tabuleiro[linha-1][coluna] = jogador
+                self.pontuacao[jogador] += 1
+                self.pontuacao[outroJogador] -= 1
             return achou
 
         elif(self.tabuleiro[linha-1][coluna] == jogador):
@@ -57,15 +64,17 @@ class Tabuleiro:
 
         return False
 
-    def substituiDescendo(self, jogador, linha, coluna):
+    def substituiDescendo(self, jogador, outroJogador, linha, coluna):
         if(linha >= (len(self.tabuleiro) - 1) or (self.tabuleiro[linha+1][coluna] == "v")):
             return False
         
-        if(self.tabuleiro[linha+1][coluna] != jogador):
-            achou = self.substituiDescendo(jogador, linha + 1, coluna)
+        if(self.tabuleiro[linha+1][coluna] == outroJogador):
+            achou = self.substituiDescendo(jogador, outroJogador, linha + 1, coluna)
             
             if(achou):
                 self.tabuleiro[linha+1][coluna] = jogador
+                self.pontuacao[jogador] += 1
+                self.pontuacao[outroJogador] -= 1
             return achou
         
         elif(self.tabuleiro[linha+1][coluna] == jogador):
@@ -73,19 +82,21 @@ class Tabuleiro:
 
         return False
 
-    def substituiHorizontal(self, jogador, linha, coluna):
-        self.substituiEsquerda(jogador, linha, coluna)
-        self.substituiDireita(jogador, linha, coluna)
+    def substituiHorizontal(self, jogador, outroJogador, linha, coluna):
+        self.substituiEsquerda(jogador, outroJogador, linha, coluna)
+        self.substituiDireita(jogador, outroJogador, linha, coluna)
 
 
-    def substituiEsquerda(self, jogador, linha, coluna):
+    def substituiEsquerda(self, jogador, outroJogador, linha, coluna):
         if((coluna <= 0) or (self.tabuleiro[linha][coluna-1] == "v")):
             return False
 
-        if(self.tabuleiro[linha][coluna-1] != jogador):
-            achou = self.substituiEsquerda(jogador, linha, coluna - 1)
+        if(self.tabuleiro[linha][coluna-1] == outroJogador):
+            achou = self.substituiEsquerda(jogador, outroJogador, linha, coluna - 1)
             if(achou):
                 self.tabuleiro[linha][coluna-1] = jogador
+                self.pontuacao[jogador] += 1
+                self.pontuacao[outroJogador] -= 1
             return achou
         
         elif(self.tabuleiro[linha][coluna-1] == jogador):
@@ -93,14 +104,16 @@ class Tabuleiro:
 
         return False
 
-    def substituiDireita(self, jogador, linha, coluna):
+    def substituiDireita(self, jogador, outroJogador, linha, coluna):
         if((coluna >= len(self.tabuleiro) - 1) or (self.tabuleiro[linha][coluna+1] == "v")):
             return False
 
-        if(self.tabuleiro[linha][coluna+1] != jogador):
-            achou = self.substituiDireita(jogador, linha, coluna + 1)
+        if(self.tabuleiro[linha][coluna+1] == outroJogador):
+            achou = self.substituiDireita(jogador, outroJogador, linha, coluna + 1)
             if(achou):
                 self.tabuleiro[linha][coluna+1] = jogador
+                self.pontuacao[jogador] += 1
+                self.pontuacao[outroJogador] -= 1
             return achou
         
         elif(self.tabuleiro[linha][coluna+1] == jogador):
@@ -108,20 +121,22 @@ class Tabuleiro:
 
         return False
 
-    def substituiDiagonal(self, jogador, linha, coluna):
-        self.substituiDiagonalSubindoEsquerda(jogador, linha, coluna)
-        self.substituiDiagonalDescendoDireita(jogador, linha, coluna)
-        self.substituiDiagonalSubindoDireita(jogador, linha, coluna)
-        self.substituiDiagonalDescendoEsquerda(jogador, linha, coluna)
+    def substituiDiagonal(self, jogador, outroJogador, linha, coluna):
+        self.substituiDiagonalSubindoEsquerda(jogador, outroJogador, linha, coluna)
+        self.substituiDiagonalDescendoDireita(jogador, outroJogador, linha, coluna)
+        self.substituiDiagonalSubindoDireita(jogador, outroJogador, linha, coluna)
+        self.substituiDiagonalDescendoEsquerda(jogador, outroJogador, linha, coluna)
 
-    def substituiDiagonalSubindoEsquerda(self, jogador, linha, coluna):
+    def substituiDiagonalSubindoEsquerda(self, jogador, outroJogador, linha, coluna):
         if((coluna <= 0) or (linha <= 0) or self.tabuleiro[linha-1][coluna-1] == "v"):
             return False
         
-        if(self.tabuleiro[linha-1][coluna-1] != jogador):
-            achou = self.substituiDiagonalSubindoEsquerda(jogador, linha - 1, coluna - 1)
+        if(self.tabuleiro[linha-1][coluna-1] == outroJogador):
+            achou = self.substituiDiagonalSubindoEsquerda(jogador, outroJogador, linha - 1, coluna - 1)
             if(achou):
                 self.tabuleiro[linha-1][coluna-1] = jogador
+                self.pontuacao[jogador] += 1
+                self.pontuacao[outroJogador] -= 1
             return achou
         
         elif(self.tabuleiro[linha-1][coluna-1] == jogador):
@@ -130,15 +145,17 @@ class Tabuleiro:
         return False
         
     
-    def substituiDiagonalDescendoDireita(self, jogador, linha, coluna):
+    def substituiDiagonalDescendoDireita(self, jogador, outroJogador, linha, coluna):
         if((coluna >= (len(self.tabuleiro) - 1)) or (linha >= (len(self.tabuleiro) - 1)) 
                 or self.tabuleiro[linha+1][coluna+1] == "v"):
             return False
         
-        if(self.tabuleiro[linha+1][coluna+1] != jogador):
-            achou = self.substituiDiagonalDescendoDireita(jogador, linha + 1, coluna + 1)
+        if(self.tabuleiro[linha+1][coluna+1] == outroJogador):
+            achou = self.substituiDiagonalDescendoDireita(jogador, outroJogador, linha + 1, coluna + 1)
             if(achou):
                 self.tabuleiro[linha+1][coluna+1] = jogador
+                self.pontuacao[jogador] += 1
+                self.pontuacao[outroJogador] -= 1
             return achou
         
         elif(self.tabuleiro[linha+1][coluna+1] == jogador):
@@ -146,14 +163,16 @@ class Tabuleiro:
 
         return False
     
-    def substituiDiagonalSubindoDireita(self, jogador, linha, coluna):
+    def substituiDiagonalSubindoDireita(self, jogador, outroJogador, linha, coluna):
         if((coluna >= (len(self.tabuleiro) - 1)) or (linha <= 0) 
                 or self.tabuleiro[linha-1][coluna+1] == "v"):
             return False
-        if(self.tabuleiro[linha-1][coluna+1] != jogador):
-            achou = self.substituiDiagonalSubindoDireita(jogador, linha - 1, coluna + 1)
+        if(self.tabuleiro[linha-1][coluna+1] == outroJogador):
+            achou = self.substituiDiagonalSubindoDireita(jogador, outroJogador, linha - 1, coluna + 1)
             if(achou):
                 self.tabuleiro[linha-1][coluna+1] = jogador
+                self.pontuacao[jogador] += 1
+                self.pontuacao[outroJogador] -= 1
             return achou
         
         elif(self.tabuleiro[linha-1][coluna+1] == jogador):
@@ -161,14 +180,16 @@ class Tabuleiro:
 
         return False
 
-    def substituiDiagonalDescendoEsquerda(self, jogador, linha, coluna):
+    def substituiDiagonalDescendoEsquerda(self, jogador, outroJogador, linha, coluna):
         if((coluna <= 0) or (linha >= (len(self.tabuleiro) - 1)) 
                 or self.tabuleiro[linha+1][coluna-1] == "v"):
             return False
-        if(self.tabuleiro[linha+1][coluna-1] != jogador):
-            achou = self.substituiDiagonalDescendoEsquerda(jogador, linha + 1, coluna - 1)
+        if(self.tabuleiro[linha+1][coluna-1] == outroJogador):
+            achou = self.substituiDiagonalDescendoEsquerda(jogador, outroJogador, linha + 1, coluna - 1)
             if(achou):
                 self.tabuleiro[linha+1][coluna-1] = jogador
+                self.pontuacao[jogador] += 1
+                self.pontuacao[outroJogador] -= 1
             return achou
         
         elif(self.tabuleiro[linha+1][coluna-1] == jogador):
