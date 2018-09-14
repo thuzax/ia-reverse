@@ -8,8 +8,8 @@
 
 #tabuleiro {
     margin-left: 33%;
-    width:400px;
-    height:407px;
+    width: 416px;
+    height: 416px;
     border:solid 1px;
 }
 
@@ -25,22 +25,25 @@
 }
 
 .casa_branca{
+    height: 50px;
+    border: 1px solid white;
     background-color: green;
 }
 
 .casa_preta{
+    height: 50px;
+    border: 1px solid white;
     background-color: green;
 }
 
-.linhaSeparadora {
-    border-bottom: 1px solid white;
-    width: 400px;
-    position: relative;
+#peca_branca {
+    background-color: white; 
 }
 
-.colunaSeparadora {
-    height: 50px;
-    border-bottom: 1px solid white;
-    width: 1px;
+#peca_preta {
+    background-color: black; 
+}
 
+.peca {
+    background-color: blue;
 }

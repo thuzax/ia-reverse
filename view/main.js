@@ -9,10 +9,6 @@ $(function(){
         var i;
         for (i=0; i<8; i++){
             $("#tabuleiro").append("<div id='linha_"+i.toString()+"' class='linha' >");
-            if(i < 7) {
-                $("#tabuleiro").append("<div class='linhaSeparadora'>");
-                // $("#tabuleiro").append("<div class='colunaSeparadora'>");
-            }
             for (j=0; j<8; j++){
                 
                 var nome_casa ="casa_"+i.toString()+"_"+j.toString();
@@ -21,11 +17,10 @@ $(function(){
                 
                 if(classe == "casa_preta"){
                     if(i < 3){
-                        $("#"+nome_casa).append("<img src='peca_preta.png' class='peca' id='"+nome_casa.replace("casa", "peca_preta")+"'/>");
+                        $("#"+nome_casa).append("<div class='peca' id='"+nome_casa.replace("casa", "peca_preta")+"'/>");
                     }
-                    else
-                    if(i > 4){
-                        $("#"+nome_casa).append("<img src='peca_branca.png' class='peca' id='"+nome_casa.replace("casa", "peca_branca")+"'/>");   
+                    else if(i > 4){
+                        $("#"+nome_casa).append("<div class='peca' id='"+nome_casa.replace("casa", "peca_branca")+"'/>");   
                     }
     
                 }
