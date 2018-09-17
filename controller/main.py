@@ -9,6 +9,7 @@ def main():
     j = 0
     cont = 0
     while(i != -1 and j != -1):
+        tabuleiro.jogadaPossivel(None, None, None)
         print(tabuleiro.pontuacao)
         i = int(input())
         j = int(input())

@@ -2,12 +2,26 @@ class Tabuleiro:
     tabuleiro = None
     tamanho = None
     pontuacao = None
+    quantidadeNaLinha = None
+    quantidadeNaColuna = None
 
     def __init__(self, tamanho):
         self.tamanho = tamanho
         self.montarTabuleiro()
+        
+        self.quantidadeNaLinha = {"P" : [], "B" : []}
+        self.quantidadeNaColuna = {"P" : [], "B" : []}
+        for i in range(self.tamanho):
+            self.quantidadeNaLinha["P"].append(0)
+            self.quantidadeNaLinha["B"].append(0)
+            self.quantidadeNaColuna["P"].append(0)
+            self.quantidadeNaColuna["B"].append(0)
+        
+        print(self.quantidadeNaLinha)
+        print(self.quantidadeNaColuna)
         self.colocarPecasIniciais()
         self.pontuacao = {"P": 2, "B": 2}
+
 
     def montarTabuleiro(self):
         self.tabuleiro = []
@@ -17,6 +31,11 @@ class Tabuleiro:
                 self.tabuleiro[i].append("v")
         return self.tabuleiro
 
+    def jogadaPossivel(self, jogador, linha, coluna):
+        print(self.quantidadeNaLinha)
+        print(self.quantidadeNaColuna)
+        pass
+
     def colocarPecasIniciais(self):
         linha1 = (self.tamanho - 1) // 2
         coluna1 = (self.tamanho - 1) // 2
@@ -24,9 +43,21 @@ class Tabuleiro:
         coluna2 = (self.tamanho) // 2
 
         self.tabuleiro[linha1][coluna1] = "B"
+        self.quantidadeNaLinha["B"][linha1] += 1
+        self.quantidadeNaColuna["B"][coluna1] += 1
+        
         self.tabuleiro[linha1][coluna2] = "P"
+        self.quantidadeNaLinha["P"][linha1] += 1
+        self.quantidadeNaColuna["P"][coluna2] += 1
+        
         self.tabuleiro[linha2][coluna1] = "P"
+        self.quantidadeNaLinha["P"][linha2] += 1
+        self.quantidadeNaColuna["P"][coluna1] += 1
+        
         self.tabuleiro[linha2][coluna2] = "B"
+        self.quantidadeNaLinha["B"][linha2] += 1
+        self.quantidadeNaColuna["B"][coluna2] += 1
+
 
     def fazerJogada(self, jogador, linha, coluna):
         if(self.tabuleiro[linha][coluna] != "v"):
@@ -34,6 +65,9 @@ class Tabuleiro:
         
         self.tabuleiro[linha][coluna] = jogador
         self.pontuacao[jogador] += 1
+        self.quantidadeNaLinha[jogador][linha] += 1
+        self.quantidadeNaColuna[jogador][coluna] += 1
+
         outroJogador = "P" if(jogador == "B") else "B"
         
         self.substituiVertical(jogador, outroJogador, linha, coluna)
@@ -55,8 +89,14 @@ class Tabuleiro:
             
             if(achou):
                 self.tabuleiro[linha-1][coluna] = jogador
+                self.quantidadeNaLinha[jogador][linha-1] += 1
+                self.quantidadeNaColuna[jogador][coluna] += 1
                 self.pontuacao[jogador] += 1
+
                 self.pontuacao[outroJogador] -= 1
+                self.quantidadeNaLinha[outroJogador][linha-1] -= 1
+                self.quantidadeNaColuna[outroJogador][coluna] -= 1
+
             return achou
 
         elif(self.tabuleiro[linha-1][coluna] == jogador):
