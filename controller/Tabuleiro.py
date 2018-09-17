@@ -2,25 +2,16 @@ class Tabuleiro:
     tabuleiro = None
     tamanho = None
     pontuacao = None
-    quantidadeNaLinha = None
-    quantidadeNaColuna = None
+    posicaoPecas = None
+    resultadoJogada = None
 
     def __init__(self, tamanho):
         self.tamanho = tamanho
         self.montarTabuleiro()
-        
-        self.quantidadeNaLinha = {"P" : [], "B" : []}
-        self.quantidadeNaColuna = {"P" : [], "B" : []}
-        for i in range(self.tamanho):
-            self.quantidadeNaLinha["P"].append(0)
-            self.quantidadeNaLinha["B"].append(0)
-            self.quantidadeNaColuna["P"].append(0)
-            self.quantidadeNaColuna["B"].append(0)
-        
-        print(self.quantidadeNaLinha)
-        print(self.quantidadeNaColuna)
+        self.posicaoPecas = {"P": [], "B": []}
         self.colocarPecasIniciais()
         self.pontuacao = {"P": 2, "B": 2}
+        self.resultadoJogada = {}
 
 
     def montarTabuleiro(self):
@@ -31,10 +22,15 @@ class Tabuleiro:
                 self.tabuleiro[i].append("v")
         return self.tabuleiro
 
-    def jogadaPossivel(self, jogador, linha, coluna):
-        print(self.quantidadeNaLinha)
-        print(self.quantidadeNaColuna)
+    def pegarJogadasPossiveis(self, jogador):
+        outroJogador = "P"
+        if(jogador == "B"):
+            outroJogador = "P"
+        for posicaoPeca in self.posicaoPecas[jogador]:
+            pass
+            # self.pegaPecasViradasHorizontal(jogador, outroJogador,posicaoPeca[0], posicaoPeca[1])
         pass
+                    
 
     def colocarPecasIniciais(self):
         linha1 = (self.tamanho - 1) // 2
@@ -43,20 +39,16 @@ class Tabuleiro:
         coluna2 = (self.tamanho) // 2
 
         self.tabuleiro[linha1][coluna1] = "B"
-        self.quantidadeNaLinha["B"][linha1] += 1
-        self.quantidadeNaColuna["B"][coluna1] += 1
+        self.posicaoPecas["B"].append((linha1, coluna1))
         
         self.tabuleiro[linha1][coluna2] = "P"
-        self.quantidadeNaLinha["P"][linha1] += 1
-        self.quantidadeNaColuna["P"][coluna2] += 1
+        self.posicaoPecas["P"].append((linha1, coluna2))
         
         self.tabuleiro[linha2][coluna1] = "P"
-        self.quantidadeNaLinha["P"][linha2] += 1
-        self.quantidadeNaColuna["P"][coluna1] += 1
+        self.posicaoPecas["P"].append((linha2, coluna1))
         
         self.tabuleiro[linha2][coluna2] = "B"
-        self.quantidadeNaLinha["B"][linha2] += 1
-        self.quantidadeNaColuna["B"][coluna2] += 1
+        self.posicaoPecas["B"].append((linha2, coluna2))
 
 
     def fazerJogada(self, jogador, linha, coluna):
@@ -65,177 +57,187 @@ class Tabuleiro:
         
         self.tabuleiro[linha][coluna] = jogador
         self.pontuacao[jogador] += 1
-        self.quantidadeNaLinha[jogador][linha] += 1
-        self.quantidadeNaColuna[jogador][coluna] += 1
 
         outroJogador = "P" if(jogador == "B") else "B"
-        
-        self.substituiVertical(jogador, outroJogador, linha, coluna)
-        self.substituiHorizontal(jogador, outroJogador, linha, coluna)
-        self.substituiDiagonal(jogador, outroJogador, linha, coluna)
 
-    def substituiVertical(self, jogador, outroJogador, linha, coluna):
-        self.substituiSubindo(jogador, outroJogador, linha, coluna)
-        self.substituiDescendo(jogador, outroJogador, linha, coluna)
         
-        return False
+    def pegaPecasViradasVertical(self, jogador, outroJogador, linha, coluna):
+        retornoSubindo = self.pegaPecasViradasSubindo(jogador, outroJogador, linha, coluna)
+        if(retornoSubindo == None):
+            retornoSubindo = []
+        else:
+            self.resultadoJogada[retornoSubindo["posicao"]] = retornoSubindo["pecasViradas"]
+            
+        
+        retornoDescendo = self.pegaPecasViradasDescendo(jogador, outroJogador, linha, coluna)
+        if(retornoDescendo == None):
+            retornoDescendo = []
+        else:
+            self.resultadoJogada[retornoDescendo["posicao"]] = retornoSubindo["pecasViradas"]
+        
 
-    def substituiSubindo(self, jogador, outroJogador, linha, coluna):
-        if((linha <= 0) or (self.tabuleiro[linha-1][coluna] == "v")):
-            return False
+    def pegaPecasViradasSubindo(self, jogador, outroJogador, linha, coluna):
+        if((linha <= 0) or self.tabuleiro[linha-1][coluna] == jogador):
+            return None
         
         if(self.tabuleiro[linha-1][coluna] == outroJogador):
-            achou = self.substituiSubindo(jogador, outroJogador, linha - 1, coluna)
+            resultadoJogada = self.pegaPecasViradasSubindo(jogador, outroJogador, linha - 1, coluna)
             
-            if(achou):
-                self.tabuleiro[linha-1][coluna] = jogador
-                self.quantidadeNaLinha[jogador][linha-1] += 1
-                self.quantidadeNaColuna[jogador][coluna] += 1
-                self.pontuacao[jogador] += 1
+            if(resultadoJogada != None):
+                resultadoJogada["pecasViradas"].append((linha - 1, coluna))
+            return resultadoJogada
 
-                self.pontuacao[outroJogador] -= 1
-                self.quantidadeNaLinha[outroJogador][linha-1] -= 1
-                self.quantidadeNaColuna[outroJogador][coluna] -= 1
+        elif(self.tabuleiro[linha-1][coluna] == "v"):
+            return {"posicao": (linha-1, coluna), "pecasViradas": []}
 
-            return achou
+        return None
 
-        elif(self.tabuleiro[linha-1][coluna] == jogador):
-            return True
-
-        return False
-
-    def substituiDescendo(self, jogador, outroJogador, linha, coluna):
-        if(linha >= (len(self.tabuleiro) - 1) or (self.tabuleiro[linha+1][coluna] == "v")):
-            return False
+    def pegaPecasViradasDescendo(self, jogador, outroJogador, linha, coluna):
+        if(linha >= (len(self.tabuleiro) - 1) or (self.tabuleiro[linha+1][coluna] == jogador)):
+            return None
         
         if(self.tabuleiro[linha+1][coluna] == outroJogador):
-            achou = self.substituiDescendo(jogador, outroJogador, linha + 1, coluna)
+            resultadoJogada = self.pegaPecasViradasDescendo(jogador, outroJogador, linha + 1, coluna)
             
-            if(achou):
-                self.tabuleiro[linha+1][coluna] = jogador
-                self.pontuacao[jogador] += 1
-                self.pontuacao[outroJogador] -= 1
-            return achou
+            if(resultadoJogada != None):
+                resultadoJogada["pecasViradas"].append((linha + 1, coluna))
+            return resultadoJogada
         
-        elif(self.tabuleiro[linha+1][coluna] == jogador):
-            return True
+        elif(self.tabuleiro[linha+1][coluna] == "v"):
+            return {"posicao": (linha+1, coluna), "pecasViradas": []}
 
-        return False
+        return None
 
-    def substituiHorizontal(self, jogador, outroJogador, linha, coluna):
-        self.substituiEsquerda(jogador, outroJogador, linha, coluna)
-        self.substituiDireita(jogador, outroJogador, linha, coluna)
+    def pegaPecasViradasHorizontal(self, jogador, outroJogador, linha, coluna):
+        retornoEsquerda = self.pegaPecasViradasEsquerda(jogador, outroJogador, linha, coluna)
+        if(retornoEsquerda == None):
+            retornoEsquerda = []
+        else:
+            self.resultadoJogada[retornoEsquerda["posicao"]] = retornoEsquerda["pecasViradas"]
+
+        retornoDireita = self.pegaPecasViradasDireita(jogador, outroJogador, linha, coluna)
+        if(retornoDireita == None):
+            retornoDireita = []
+        else:
+            self.resultadoJogada[retornoDireita["posicao"]] = retornoDireita["pecasViradas"]
 
 
-    def substituiEsquerda(self, jogador, outroJogador, linha, coluna):
-        if((coluna <= 0) or (self.tabuleiro[linha][coluna-1] == "v")):
-            return False
+    def pegaPecasViradasEsquerda(self, jogador, outroJogador, linha, coluna):
+        if((coluna <= 0) or (self.tabuleiro[linha][coluna-1] == jogador)):
+            return None
 
         if(self.tabuleiro[linha][coluna-1] == outroJogador):
-            achou = self.substituiEsquerda(jogador, outroJogador, linha, coluna - 1)
-            if(achou):
-                self.tabuleiro[linha][coluna-1] = jogador
-                self.pontuacao[jogador] += 1
-                self.pontuacao[outroJogador] -= 1
-            return achou
+            resultadoJogada = self.pegaPecasViradasEsquerda(jogador, outroJogador, linha, coluna - 1)
+            if(resultadoJogada != None):
+                resultadoJogada["pecasValidas"].append((linha, coluna - 1))
+            return resultadoJogada
         
-        elif(self.tabuleiro[linha][coluna-1] == jogador):
-            return True
+        elif(self.tabuleiro[linha][coluna-1] == "v"):
+            return {"posicao": (linha, coluna-1), "pecasViradas": []}
 
-        return False
+        return None
 
-    def substituiDireita(self, jogador, outroJogador, linha, coluna):
-        if((coluna >= len(self.tabuleiro) - 1) or (self.tabuleiro[linha][coluna+1] == "v")):
-            return False
+    def pegaPecasViradasDireita(self, jogador, outroJogador, linha, coluna):
+        if((coluna >= len(self.tabuleiro) - 1) or (self.tabuleiro[linha][coluna+1] == jogador)):
+            return None
 
         if(self.tabuleiro[linha][coluna+1] == outroJogador):
-            achou = self.substituiDireita(jogador, outroJogador, linha, coluna + 1)
-            if(achou):
-                self.tabuleiro[linha][coluna+1] = jogador
-                self.pontuacao[jogador] += 1
-                self.pontuacao[outroJogador] -= 1
-            return achou
+            resultadoJogada = self.pegaPecasViradasDireita(jogador, outroJogador, linha, coluna + 1)
+            if(resultadoJogada != None):
+                resultadoJogada["pecasValidas"].append((linha, coluna + 1))
+            return resultadoJogada
         
-        elif(self.tabuleiro[linha][coluna+1] == jogador):
-            return True
+        elif(self.tabuleiro[linha][coluna+1] == "v"):
+            return {"posicao": (linha, coluna+1), "pecasViradas": []}
 
-        return False
+        return None
 
-    def substituiDiagonal(self, jogador, outroJogador, linha, coluna):
-        self.substituiDiagonalSubindoEsquerda(jogador, outroJogador, linha, coluna)
-        self.substituiDiagonalDescendoDireita(jogador, outroJogador, linha, coluna)
-        self.substituiDiagonalSubindoDireita(jogador, outroJogador, linha, coluna)
-        self.substituiDiagonalDescendoEsquerda(jogador, outroJogador, linha, coluna)
+    def pegaPecasViradasDiagonal(self, jogador, outroJogador, linha, coluna):
+        retornoSubindoEsquerda = self.pegaPecasViradasDiagonalSubindoEsquerda(jogador, outroJogador, linha, coluna)
+        if(retornoSubindoEsquerda == None):
+            retornoSubindoEsquerda = []
+        else:
+            self.resultadoJogada[retornoSubindoEsquerda["posicao"]] = retornoSubindoEsquerda["pecasViradas"]
 
-    def substituiDiagonalSubindoEsquerda(self, jogador, outroJogador, linha, coluna):
-        if((coluna <= 0) or (linha <= 0) or self.tabuleiro[linha-1][coluna-1] == "v"):
-            return False
+        retornoSubindoDireita = self.pegaPecasViradasDiagonalSubindoDireita(jogador, outroJogador, linha, coluna)
+        if(retornoSubindoDireita == None):
+            retornoSubindoDireita = []
+        else:
+            self.resultadoJogada[retornoSubindoDireita["posicao"]] = retornoSubindoDireita["pecasViradas"]
+
+        retornoDescendoEsquerda = self.pegaPecasViradasDiagonalDescendoEsquerda(jogador, outroJogador, linha, coluna)
+        if(retornoDescendoEsquerda == None):
+            retornoDescendoEsquerda = []
+        else:
+            self.resultadoJogada[retornoDescendoEsquerda["posicao"]] = retornoDescendoEsquerda["pecasViradas"]
+
+        retornoDescendoDireita = self.pegaPecasViradasDiagonalDescendoDireita(jogador, outroJogador, linha, coluna)
+        if(retornoDescendoDireita == None):
+            retornoDescendoDireita = []
+        else:
+            self.resultadoJogada[retornoDescendoDireita["posicao"]] = retornoDescendoDireita["pecasViradas"]
+        
+    def pegaPecasViradasDiagonalSubindoEsquerda(self, jogador, outroJogador, linha, coluna):
+        if((coluna <= 0) or (linha <= 0) or self.tabuleiro[linha-1][coluna-1] == jogador):
+            return None
         
         if(self.tabuleiro[linha-1][coluna-1] == outroJogador):
-            achou = self.substituiDiagonalSubindoEsquerda(jogador, outroJogador, linha - 1, coluna - 1)
-            if(achou):
-                self.tabuleiro[linha-1][coluna-1] = jogador
-                self.pontuacao[jogador] += 1
-                self.pontuacao[outroJogador] -= 1
-            return achou
+            resultadoJogada = self.pegaPecasViradasDiagonalSubindoEsquerda(jogador, outroJogador, linha - 1, coluna - 1)
+            if(resultadoJogada != None):
+                resultadoJogada["pecasViradas"].append((linha - 1, coluna - 1))
+            return resultadoJogada
         
-        elif(self.tabuleiro[linha-1][coluna-1] == jogador):
-            return True
+        elif(self.tabuleiro[linha-1][coluna-1] == "v"):
+            return {"posicao": (linha-1, coluna-1), "pecasViradas": []}
 
-        return False
+        return None
         
     
-    def substituiDiagonalDescendoDireita(self, jogador, outroJogador, linha, coluna):
+    def pegaPecasViradasDiagonalDescendoDireita(self, jogador, outroJogador, linha, coluna):
         if((coluna >= (len(self.tabuleiro) - 1)) or (linha >= (len(self.tabuleiro) - 1)) 
-                or self.tabuleiro[linha+1][coluna+1] == "v"):
-            return False
+                or self.tabuleiro[linha+1][coluna+1] == jogador):
+            return None
         
         if(self.tabuleiro[linha+1][coluna+1] == outroJogador):
-            achou = self.substituiDiagonalDescendoDireita(jogador, outroJogador, linha + 1, coluna + 1)
-            if(achou):
-                self.tabuleiro[linha+1][coluna+1] = jogador
-                self.pontuacao[jogador] += 1
-                self.pontuacao[outroJogador] -= 1
-            return achou
+            resultadoJogada = self.pegaPecasViradasDiagonalDescendoDireita(jogador, outroJogador, linha + 1, coluna + 1)
+            if(resultadoJogada != None):
+                resultadoJogada["pecasViradas"].append((linha + 1, coluna + 1))
+            return resultadoJogada
         
-        elif(self.tabuleiro[linha+1][coluna+1] == jogador):
-            return True
+        elif(self.tabuleiro[linha+1][coluna+1] == "v"):
+            return {"posicao": (linha+1, coluna+1), "pecasViradas": []}
 
-        return False
+        return None
     
-    def substituiDiagonalSubindoDireita(self, jogador, outroJogador, linha, coluna):
+    def pegaPecasViradasDiagonalSubindoDireita(self, jogador, outroJogador, linha, coluna):
         if((coluna >= (len(self.tabuleiro) - 1)) or (linha <= 0) 
-                or self.tabuleiro[linha-1][coluna+1] == "v"):
-            return False
+                or self.tabuleiro[linha-1][coluna+1] == jogador):
+            return None
         if(self.tabuleiro[linha-1][coluna+1] == outroJogador):
-            achou = self.substituiDiagonalSubindoDireita(jogador, outroJogador, linha - 1, coluna + 1)
-            if(achou):
-                self.tabuleiro[linha-1][coluna+1] = jogador
-                self.pontuacao[jogador] += 1
-                self.pontuacao[outroJogador] -= 1
-            return achou
+            resultadoJogada = self.pegaPecasViradasDiagonalSubindoDireita(jogador, outroJogador, linha - 1, coluna + 1)
+            if(resultadoJogada != None):
+                resultadoJogada["pecasViradas"].append((linha - 1, coluna + 1))
+            return resultadoJogada
         
-        elif(self.tabuleiro[linha-1][coluna+1] == jogador):
-            return True
+        elif(self.tabuleiro[linha-1][coluna+1] == "v"):
+            return {"posicao": (linha-1, coluna+1), "pecasViradas": []}
 
-        return False
+        return None
 
-    def substituiDiagonalDescendoEsquerda(self, jogador, outroJogador, linha, coluna):
+    def pegaPecasViradasDiagonalDescendoEsquerda(self, jogador, outroJogador, linha, coluna):
         if((coluna <= 0) or (linha >= (len(self.tabuleiro) - 1)) 
-                or self.tabuleiro[linha+1][coluna-1] == "v"):
-            return False
+                or self.tabuleiro[linha+1][coluna-1] == jogador):
+            return None
         if(self.tabuleiro[linha+1][coluna-1] == outroJogador):
-            achou = self.substituiDiagonalDescendoEsquerda(jogador, outroJogador, linha + 1, coluna - 1)
-            if(achou):
-                self.tabuleiro[linha+1][coluna-1] = jogador
-                self.pontuacao[jogador] += 1
-                self.pontuacao[outroJogador] -= 1
-            return achou
+            resultadoJogada = self.pegaPecasViradasDiagonalDescendoEsquerda(jogador, outroJogador, linha + 1, coluna - 1)
+            if(resultadoJogada != None):
+                resultadoJogada["pecasViradas"].append((linha + 1, coluna - 1))
+            return resultadoJogada
         
-        elif(self.tabuleiro[linha+1][coluna-1] == jogador):
-            return True
+        elif(self.tabuleiro[linha+1][coluna-1] == "v"):
+            return {"posicao": (linha+1, coluna-1), "pecasViradas": []}
 
-        return False
+        return None
 
 
     def __str__(self):
