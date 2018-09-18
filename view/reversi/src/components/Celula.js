@@ -13,11 +13,11 @@ export default class Celula extends React.Component {
     }
     show(id, status){
         var resultado = this.props.handleClick(id, status);
-        if(status === "VAZIO") {
+        if(status === "-") {
             if(resultado) {
-                this.setState({status: "PRETO"});
+                this.setState({status: "P"});
             } else {
-                this.setState({status: "BRANCO"});
+                this.setState({status: "B"});
             }
         }
     }

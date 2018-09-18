@@ -26,14 +26,14 @@ export default class Tabuleiro extends React.Component{
         for(var i = 0; i < 8; i++){
             novoTabuleiro[i] = [];
             for(var j = 0; j < 8; j++){
-                novoTabuleiro[i][j] = "VAZIO";
+                novoTabuleiro[i][j] = "-";
             }
         }
         console.log(novoTabuleiro);
-        novoTabuleiro[3][3] = "PRETO";
-        novoTabuleiro[4][4] = "PRETO";
-        novoTabuleiro[3][4] = "BRANCO";
-        novoTabuleiro[4][3] = "BRANCO";
+        novoTabuleiro[3][3] = "P";
+        novoTabuleiro[4][4] = "P";
+        novoTabuleiro[3][4] = "B";
+        novoTabuleiro[4][3] = "B";
         this.setState({tabuleiro: novoTabuleiro});
     }
 
@@ -48,9 +48,10 @@ export default class Tabuleiro extends React.Component{
             {
                 "posicaoI": "${posI}",
                 "posicaoJ": "${posJ}",
-                "jogador": "${jogador}"
+                "jogador": "${jogador}",
+                "tabuleiro": "${this.state.tabuleiro}"
             }
-        `)
+        `);
         return objJSON;
     }
 
@@ -58,7 +59,7 @@ export default class Tabuleiro extends React.Component{
         if (id !== undefined) {
             var posicoes = id.split("-")
             var obj = this.exportar(posicoes[0], posicoes[1], this.state.pretoProx)
-            axios.post('http://localhost:5000/jogar', {json: obj}).then((r) => {
+            axios.post('http://localhost:5000/jogar', obj).then((r) => {
                 console.log(r);
             }, (err) => {
                 console.log(err);

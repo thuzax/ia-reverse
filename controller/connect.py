@@ -9,6 +9,5 @@ def hello_world():
 
 @app.route('/jogar', methods=['POST'])
 def jogar():
-    print(request.data)
-
-    return ''
+    print(request.json)
+    return main(request.json)

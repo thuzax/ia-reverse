@@ -1,9 +1,15 @@
 from Tabuleiro import Tabuleiro
 import json
+import sys
 
 
-def main():
+def main(args):
     tabuleiro = Tabuleiro(8)
+    print("\n++++++++++\n+++++++++++++\n")
+    # trem = args[0].decode("utf-8")
+    # print(trem)
+    tabuleiro.lerTabuleiro(args["tabuleiro"])
+    print(tabuleiro)
     # i = 0
     # j = 0
     # cont = 0
@@ -25,9 +31,5 @@ def main():
     # print(tabuleiro.pontuacao)
 
     
-    print(tabuleiro.exportar())
-    print(json.dumps(tabuleiro.exportar()), file=open("teste.json", "w"))
-    return "OK"
-
-
-main()
+    # print(tabuleiro.exportar())
+    return (tabuleiro.exportar())

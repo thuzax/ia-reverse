@@ -3,10 +3,8 @@ class Tabuleiro:
     def __init__(self, tamanho):
         self.tamanho = tamanho
         self.tabuleiro = []
-        self.montarTabuleiro()
         self.posicaoPecas = {"P": [], "B": []}
-        self.colocarPecasIniciais()
-        self.pontuacao = {"P": 2, "B": 2}
+        self.pontuacao = {"P": 0, "B": 0}
 
 
     def montarTabuleiro(self):
@@ -16,6 +14,20 @@ class Tabuleiro:
                 self.tabuleiro[i].append("-")
         return self.tabuleiro
 
+    def lerTabuleiro(self, tabuleiroString):
+        vetor = tabuleiroString.split(",")
+
+        for i in range(self.tamanho):
+            self.tabuleiro.append([])
+            for j in range(self.tamanho):
+                valor = vetor[i * self.tamanho + j]
+                self.tabuleiro[i].append(valor)
+                if(valor != "-"):
+                    self.posicaoPecas[valor].append((i, j))
+                    self.pontuacao[valor] += 1
+        
+                
+                
 
     def colocarPecasIniciais(self):
         linha1 = (self.tamanho - 1) // 2
@@ -285,6 +297,10 @@ class Tabuleiro:
                 saida += str(self.tabuleiro[i][j]) + "  "
             
             saida += "\n"
+        
+        saida += "\n"
+        saida += "P: " + str(self.pontuacao["P"]) + "\n"
+        saida += "B: " + str(self.pontuacao["B"]) + "\n"
 
         return saida
     
