@@ -1,11 +1,8 @@
 class Tabuleiro:
-    tabuleiro = None
-    tamanho = None
-    pontuacao = None
-    posicaoPecas = None
 
     def __init__(self, tamanho):
         self.tamanho = tamanho
+        self.tabuleiro = []
         self.montarTabuleiro()
         self.posicaoPecas = {"P": [], "B": []}
         self.colocarPecasIniciais()
@@ -13,7 +10,6 @@ class Tabuleiro:
 
 
     def montarTabuleiro(self):
-        self.tabuleiro = []
         for i in range(self.tamanho):
             self.tabuleiro.append([])
             for j in range(self.tamanho):
@@ -292,3 +288,19 @@ class Tabuleiro:
 
         return saida
     
+
+    def exportar(self):
+        dicionarioTabuleiro = {}
+        for i in range(len(self.tabuleiro)):
+            dicionarioTabuleiro[str(i)] = {}
+            for j in range(len(self.tabuleiro)):
+                dicionarioTabuleiro[str(i)][str(j)] = self.tabuleiro[i][j]
+
+        print(dicionarioTabuleiro)
+        dicionario = {
+            "tamanho" : self.tamanho,
+            "tabuleiro" : dicionarioTabuleiro,
+            "pontuacao" : self.pontuacao,
+
+        }
+        return dicionario
