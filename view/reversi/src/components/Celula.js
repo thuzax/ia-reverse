@@ -11,19 +11,13 @@ export default class Celula extends React.Component {
             status: this.props.status,
         }
     }
-    show(id, status){
-        var resultado = this.props.handleClick(id, status);
-        if(status === "-") {
-            if(resultado) {
-                this.setState({status: "P"});
-            } else {
-                this.setState({status: "B"});
-            }
-        }
+    show(id){
+        this.props.handleClick(id);
+        console.log(this.state.status);
     }
     render(){
         return(
-            <button className='celula' onClick={this.show.bind(this, this.state.id, this.state.status)}>
+            <button className='celula' onClick={this.show.bind(this, this.state.id)}>
             <Peca cor={this.state.status}/>
             </button>
         );

@@ -13,12 +13,29 @@ export default class Tabuleiro extends React.Component{
             tabuleiro: [],
         };
 
-        
+        this.renderTabuleiro=this.renderTabuleiro.bind(this)
         // axios.get('http://localhost:5000/').then((response) => {
         //     console.log(response)
         // }, (err) => {
         //     console.log(err)
         // })
+    }
+
+    renderTabuleiro() {
+        console.log(this.state.tabuleiro)
+        const {tabuleiro} = this.state
+        return(
+            tabuleiro.map((linhas, indiceLinha) => (
+                linhas.map((celula, indiceColuna) => (
+                    <Celula 
+                    key={""+indiceLinha+"-"+indiceColuna} 
+                    id={""+indiceLinha+"-"+indiceColuna} 
+                    status={tabuleiro[indiceLinha][indiceColuna]} 
+                    handleClick={this.handleChildClick.bind(this)}
+                    />        
+                ))
+            ))
+        );
     }
 
     componentWillMount() {
@@ -29,7 +46,7 @@ export default class Tabuleiro extends React.Component{
                 novoTabuleiro[i][j] = "-";
             }
         }
-        console.log(novoTabuleiro);
+        //console.log(novoTabuleiro);
         novoTabuleiro[3][3] = "P";
         novoTabuleiro[4][4] = "P";
         novoTabuleiro[3][4] = "B";
@@ -55,28 +72,37 @@ export default class Tabuleiro extends React.Component{
         return objJSON;
     }
 
-    handleChildClick(id, status) {
-        if (id !== undefined) {
-            var posicoes = id.split("-")
-            var obj = this.exportar(posicoes[0], posicoes[1], this.state.pretoProx)
-            axios.post('http://localhost:5000/jogar', obj).then((r) => {
-                console.log(r);
-            }, (err) => {
-                console.log(err);
-            });
+    atualizaTabela(dados){
+        var novoTabuleiro = []
+        for(var i = 0; i < dados.tamanho; i++) {
+            novoTabuleiro[i] = [];
+            for(var j = 0; j < dados.tamanho; j++) {
+                novoTabuleiro[i][j] = dados.tabuleiro[i][j];
+            }
         }
-        this.setState({pretoProx: !this.state.pretoProx});
-        return this.state.pretoProx;
+        this.setState({tabuleiro:  novoTabuleiro});
+        console.log(this.state.tabuleiro)
+
+    }
+
+    handleChildClick(id) {
+
+        var posicoes = id.split("-")
+        var obj = this.exportar(posicoes[0], posicoes[1], this.state.pretoProx)
+        axios.post('http://localhost:5000/jogar', obj).then((response) => {
+            console.log(response.data);
+            this.atualizaTabela(response.data);
+            this.setState({pretoProx: !this.state.pretoProx});
+            // console.log(this.state.tabuleiro);
+        }, (err) => {
+            console.log(err);
+        });
+        //console.log(this.state.tabuleiro);
     }
     render(){
-        const {tabuleiro} = this.state
         return(
             <div className="tab">
-                {tabuleiro.map((linhas, indiceLinha) => (
-                    linhas.map((celula, indiceColuna) => (
-                        <Celula id={""+indiceLinha+"-"+indiceColuna} status={tabuleiro[indiceLinha][indiceColuna]} handleClick={this.handleChildClick.bind(this)}/>        
-                    ))
-                ))}
+                {this.renderTabuleiro()}
             </div>
         );
     }
