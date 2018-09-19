@@ -72,6 +72,9 @@ class Tabuleiro:
         
         resultadoJogada = self.pegaJogadasPossiveis(jogador, outroJogador)
 
+        if(len(resultadoJogada) <= 0):
+            return True
+        
         if((linha, coluna) not in resultadoJogada):
             return False
         
@@ -81,6 +84,10 @@ class Tabuleiro:
         self.pontuacao[jogador] += 1
         for posicoesPeca in resultadoJogada[(linha, coluna)]:
             self.viraPecas(jogador, outroJogador, posicoesPeca)
+
+        resultadoJogada = self.pegaJogadasPossiveis(outroJogador, jogador)
+        if(len(resultadoJogada) <= 0):
+            return False
 
         return True
 

@@ -4,12 +4,7 @@ body {
   font-family: sans-serif;
 }
 
-.celula{
-  width: 60px;
-  height: 60px;
-  background-color: green;
-  border-block-end-color: black;
-}
+
 
 
 .container{
@@ -20,6 +15,38 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+
+.box{
+  width: 700px;
+  height: 650px;
+  background-color: saddlebrown;
+}
+
+.titulo{
+  width: 700px;
+  text-align: center;
+  color: azure;
+}
+
+.tabuleiro{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.tab{
+  width: 424px;
+  height: 424px;
+}
+
+.celula{
+  width: 53px;
+  height: 53px;
+  background-color: green;
+  border-block-end-color: black;
 }
 
 .pecaBranca{
@@ -41,29 +68,10 @@ body {
   height: 25px;
 }
 
-.box{
-  width: 700px;
-  height: 600px;
-  background-color: darkseagreen;
-}
-
-.titulo{
-  width: 700px;
-  text-align: center;
-  color: azure;
-}
-
-.tabuleiro{
-  width: 700px;
-  height: 500px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-
-}
-
-.tab{
-  width: 482px;
-  height: 482px;
+.info {
+  width: 424px;
+  height: 30px;
+  padding-top: 20px;
+  color: white;
+  font-size: 30px;
 }

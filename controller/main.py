@@ -10,8 +10,9 @@ def main(args):
     # print(trem)
     print(args)
     tabuleiro.lerTabuleiro(args["tabuleiro"])
-    tabuleiro.fazerJogada(args["jogador"], int(args["posicaoI"]), int(args["posicaoJ"]))
+    resultadoJogada = tabuleiro.fazerJogada(args["jogador"], int(args["posicaoI"]), int(args["posicaoJ"]))
     print("----------------------------------------")
     print(tabuleiro)
-
-    return (json.dumps(tabuleiro.exportar()))
+    resultado = tabuleiro.exportar()
+    resultado["jogadaFeita"] = resultadoJogada
+    return (json.dumps(resultado))

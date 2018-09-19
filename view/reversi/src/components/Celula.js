@@ -13,12 +13,11 @@ export default class Celula extends React.Component {
     }
     show(id){
         this.props.handleClick(id);
-        console.log(this.state.status);
     }
     render(){
         return(
             <button className='celula' onClick={this.show.bind(this, this.state.id)}>
-            <Peca cor={this.state.status}/>
+            <Peca cor={this.props.status}/>
             </button>
         );
     }

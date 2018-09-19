@@ -11,6 +11,8 @@ export default class Tabuleiro extends React.Component{
             jogador: "P",
             pretoProx: true,
             tabuleiro: [],
+            pontosP: 2,
+            pontosB: 2,
         };
 
         this.renderTabuleiro=this.renderTabuleiro.bind(this)
@@ -22,8 +24,7 @@ export default class Tabuleiro extends React.Component{
     }
 
     renderTabuleiro() {
-        console.log(this.state.tabuleiro)
-        const {tabuleiro} = this.state
+        const {tabuleiro} = this.state;
         return(
             tabuleiro.map((linhas, indiceLinha) => (
                 linhas.map((celula, indiceColuna) => (
@@ -35,6 +36,21 @@ export default class Tabuleiro extends React.Component{
                     />        
                 ))
             ))
+        );
+    }
+
+    renderInformacoes() {
+        const{pontosP, pontosB, pretoProx} = this.state
+        var jogador = "Branco"
+        if(pretoProx) {
+            jogador = "Preto"
+        }
+        return(
+            <div>
+                Preto: {pontosP} <br></br>
+                Branco: {pontosB} <br></br>
+                Próximo: {jogador}
+            </div>
         );
     }
 
@@ -81,8 +97,6 @@ export default class Tabuleiro extends React.Component{
             }
         }
         this.setState({tabuleiro:  novoTabuleiro});
-        console.log(this.state.tabuleiro)
-
     }
 
     handleChildClick(id) {
@@ -92,17 +106,31 @@ export default class Tabuleiro extends React.Component{
         axios.post('http://localhost:5000/jogar', obj).then((response) => {
             console.log(response.data);
             this.atualizaTabela(response.data);
-            this.setState({pretoProx: !this.state.pretoProx});
+            if(response.data.jogadaFeita) {
+                this.setState({pretoProx: !this.state.pretoProx});
+            }
+            this.setState({pontosB: response.data.pontuacao.B})
+            this.setState({pontosP: response.data.pontuacao.P})
+            if(this.state.pontosB + this.state.pontosP == 64) {
+                var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
+                alert("Fim de jogo! O vencedor foi " + vencedor)
+            }
             // console.log(this.state.tabuleiro);
         }, (err) => {
             console.log(err);
         });
         //console.log(this.state.tabuleiro);
+        
     }
     render(){
         return(
-            <div className="tab">
-                {this.renderTabuleiro()}
+            <div>
+                <div className="tab">
+                    {this.renderTabuleiro()}
+                </div>
+                <div className="info">
+                    {this.renderInformacoes()}
+                </div>
             </div>
         );
     }
