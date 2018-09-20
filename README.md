@@ -1,5 +1,4 @@
-É necessário ter instalado o "npm"
-É necessário ter instalado o "flask"
+É necessário ter instalado o "npm" e o "flask"
 
 No diretório view/reversi/ use (no terminal) o comando:
 	npm i
