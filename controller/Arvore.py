@@ -1,0 +1,99 @@
+from Noh import Noh
+from Tabuleiro import Tabuleiro
+class Arvore:
+    def __init__(self, jogador, nivel):
+        self.raiz = None
+        self.jogador = jogador
+        self.oponente = "B" if self.jogador == "P" else "P"
+        self.nivel = nivel
+
+    def adicionaNoh(self, tabuleiro, pai = None):
+        novo = Noh(tabuleiro)
+        if(self.raiz == None):
+            self.raiz = novo
+            return
+        novo.pai = pai
+        pai.filhos.append(novo)
+
+    def insereNaPosicao(self, jogadasOrdenadas, posicoes, resultadoPontos):
+        for i in range(len(jogadasOrdenadas)):
+            pontuacaoJogada = list(jogadasOrdenadas[i].items())[0]
+            if(pontuacaoJogada < resultadoPontos):
+                jogadasOrdenadas.insert(i, {posicoes: resultadoPontos})
+                return True
+        
+        return False
+
+    def insereOrdenado(self, posicoes, jogadasOrdenadas, resultadoPontos, tamanho):
+        if(len(jogadasOrdenadas) == 0):
+            jogadasOrdenadas.append({posicoes: resultadoPontos})
+            return
+        
+        melhorPontuacao = list(jogadasOrdenadas[0].values())[0]
+        if(resultadoPontos > melhorPontuacao - 2):
+            if(len(jogadasOrdenadas) < tamanho):
+                inserido = self.insereNaPosicao(jogadasOrdenadas, posicoes, resultadoPontos)
+                if(inserido):
+                    return
+                jogadasOrdenadas.append({posicoes: resultadoPontos})
+                return
+            self.insereNaPosicao(jogadasOrdenadas, posicoes, resultadoPontos)
+
+
+
+    # def escolheJogada(self, jogador, oponente, atual):
+    #     print(jogadas)
+    #     numeroMaximoJogadasArmazenadas = 5
+    #     jogadasOrdenadas = []
+    #     for posicoes in jogadas:
+    #         print(posicoes, jogadas[posicoes])
+    #         novaPontuacaoJogador = atual.tabuleiro.pontuacao[jogador] + len(jogadas[posicoes]) + 1
+    #         novaPontuacaoOponente = atual.tabuleiro.pontuacao[oponente] - len(jogadas[posicoes])
+    #         resultadoPontos = novaPontuacaoJogador - novaPontuacaoOponente
+    #         print(str(novaPontuacaoJogador) + " " + str(novaPontuacaoOponente))
+    #         self.insereOrdenado(posicoes, jogadasOrdenadas, resultadoPontos, numeroMaximoJogadasArmazenadas)
+            
+    #     print(jogadasOrdenadas)
+        
+    #     return 
+
+
+    def preveJogada(self):
+        return self.preveJogadaRecursivo(self.raiz, 0)
+
+
+    def preveJogadaRecursivo(self, atual, iteracao):
+        if(iteracao == self.nivel):
+            return
+    
+        jogadorAtual = self.jogador
+        oponenteAtual = self.oponente
+        if(iteracao % 2 != 0):
+            jogadorAtual = self.oponente
+            oponenteAtual = self.jogador
+        
+        jogadas = atual.tabuleiro.pegaJogadasPossiveis(jogadorAtual, oponenteAtual)
+        for jogada in jogadas:
+            novoTabuleiro = atual.tabuleiro.copy()
+            novoTabuleiro.fazJogada(jogadorAtual, jogada[0], jogada[1])
+            self.adicionaNoh(novoTabuleiro, atual)
+        
+        for filho in atual.filhos:
+            self.preveJogadaRecursivo(filho, iteracao + 1)
+
+        # jogada = self.escolheJogada(jogadorAtual, oponenteAtual, atual)
+            
+
+
+
+    def __str__(self):
+        return self.retornaArvore(self.raiz, "", 0, 0)
+
+    def retornaArvore(self, noh, saida, nivel, identificador):
+        saida += "====== Nivel: " + str(nivel) + " ID: " + str(identificador) + " ==================\n"
+        saida += str(noh.tabuleiro)
+        
+        for i in range(len(noh.filhos)):
+            saida = self.retornaArvore(noh.filhos[i], saida, nivel + 1, i)
+        
+        return saida

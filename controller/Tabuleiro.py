@@ -54,7 +54,7 @@ class Tabuleiro:
             self.pegaPecasViradasHorizontal(jogador, outroJogador, peca[0], peca[1], resultadoJogada)
             self.pegaPecasViradasVertical(jogador, outroJogador, peca[0], peca[1], resultadoJogada)
             self.pegaPecasViradasDiagonal(jogador, outroJogador, peca[0], peca[1], resultadoJogada)
-        
+
         return resultadoJogada
 
 
@@ -66,7 +66,7 @@ class Tabuleiro:
         self.pontuacao[outroJogador] -= 1
 
 
-    def fazerJogada(self, jogador, linha, coluna):
+    def fazJogada(self, jogador, linha, coluna):
         outroJogador = "P" if(jogador == "B") else "B"
 
         
@@ -312,14 +312,13 @@ class Tabuleiro:
         return saida
     
 
-    def exportar(self):
+    def exporta(self):
         dicionarioTabuleiro = {}
         for i in range(len(self.tabuleiro)):
             dicionarioTabuleiro[str(i)] = {}
             for j in range(len(self.tabuleiro)):
                 dicionarioTabuleiro[str(i)][str(j)] = self.tabuleiro[i][j]
-
-        print(dicionarioTabuleiro)
+    
         dicionario = {
             "tamanho" : self.tamanho,
             "tabuleiro" : dicionarioTabuleiro,
@@ -327,3 +326,21 @@ class Tabuleiro:
 
         }
         return dicionario
+
+    def copy(self):
+        novo = Tabuleiro(self.tamanho)
+        for peca in self.posicaoPecas["P"]:
+            novo.posicaoPecas["P"].append(peca)
+
+        for peca in self.posicaoPecas["B"]:
+            novo.posicaoPecas["B"].append(peca)
+
+        novo.pontuacao["P"] = self.pontuacao["P"]
+        novo.pontuacao["B"] = self.pontuacao["B"]
+
+        for i in range(self.tamanho):
+            novo.tabuleiro.append([])
+            for j in range(self.tamanho):
+                novo.tabuleiro[i].append(self.tabuleiro[i][j])
+        
+        return novo
