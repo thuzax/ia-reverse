@@ -105,16 +105,43 @@ export default class Tabuleiro extends React.Component{
         var obj = this.exportar(posicoes[0], posicoes[1], this.state.pretoProx)
         axios.post('http://localhost:5000/jogar', obj).then((response) => {
             console.log(response.data);
-            this.atualizaTabela(response.data);
-            if(response.data.jogadaFeita) {
+            this.atualizaTabela(response.data.jogador);
+            if(response.data.jogador.jogadaFeita) {
                 this.setState({pretoProx: !this.state.pretoProx});
             }
-            this.setState({pontosB: response.data.pontuacao.B})
-            this.setState({pontosP: response.data.pontuacao.P})
+            this.setState({pontosB: response.data.jogador.pontuacao.B})
+            this.setState({pontosP: response.data.jogador.pontuacao.P})
             if(this.state.pontosB + this.state.pontosP == 64) {
                 var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
                 alert("Fim de jogo! O vencedor foi " + vencedor)
+            } else {
+                if(this.state.pontosB == 0) {
+                    alert("Fim de jogo! O vencedor foi Preto")
+                } else {
+                    if(this.state.pontosP == 0) {
+                        alert("Fim de jogo! O vencedor foi Branco")
+                    }
+                }
             }
+            this.atualizaTabela(response.data.ia);
+            if(response.data.ia.jogadaFeita) {
+                this.setState({pretoProx: !this.state.pretoProx});
+            }
+            this.setState({pontosB: response.data.ia.pontuacao.B})
+            this.setState({pontosP: response.data.ia.pontuacao.P})
+            if(this.state.pontosB + this.state.pontosP == 64) {
+                var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
+                alert("Fim de jogo! O vencedor foi " + vencedor)
+            } else {
+                if(this.state.pontosB == 0) {
+                    alert("Fim de jogo! O vencedor foi Preto")
+                } else {
+                    if(this.state.pontosP == 0) {
+                        alert("Fim de jogo! O vencedor foi Branco")
+                    }
+                }
+            }
+            
             // console.log(this.state.tabuleiro);
         }, (err) => {
             console.log(err);
