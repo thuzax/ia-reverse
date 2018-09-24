@@ -111,37 +111,46 @@ export default class Tabuleiro extends React.Component{
             }
             this.setState({pontosB: response.data.jogador.pontuacao.B})
             this.setState({pontosP: response.data.jogador.pontuacao.P})
+            var jogoFinalizado = false;
             if(this.state.pontosB + this.state.pontosP == 64) {
                 var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
+                jogoFinalizado = true;
                 alert("Fim de jogo! O vencedor foi " + vencedor)
             } else {
                 if(this.state.pontosB == 0) {
+                    jogoFinalizado = true;
                     alert("Fim de jogo! O vencedor foi Preto")
                 } else {
                     if(this.state.pontosP == 0) {
+                        jogoFinalizado = true;
                         alert("Fim de jogo! O vencedor foi Branco")
                     }
                 }
             }
-            this.atualizaTabela(response.data.ia);
-            if(response.data.ia.jogadaFeita) {
-                this.setState({pretoProx: !this.state.pretoProx});
-            }
-            this.setState({pontosB: response.data.ia.pontuacao.B})
-            this.setState({pontosP: response.data.ia.pontuacao.P})
-            if(this.state.pontosB + this.state.pontosP == 64) {
-                var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
-                alert("Fim de jogo! O vencedor foi " + vencedor)
-            } else {
-                if(this.state.pontosB == 0) {
-                    alert("Fim de jogo! O vencedor foi Preto")
-                } else {
-                    if(this.state.pontosP == 0) {
-                        alert("Fim de jogo! O vencedor foi Branco")
+
+            if(!jogoFinalizado) {
+                setTimeout(() => {
+                    this.atualizaTabela(response.data.ia);
+                    if(response.data.ia.jogadaFeita) {
+                        this.setState({pretoProx: !this.state.pretoProx});
                     }
-                }
+                    this.setState({pontosB: response.data.ia.pontuacao.B})
+                    this.setState({pontosP: response.data.ia.pontuacao.P})
+                    if(this.state.pontosB + this.state.pontosP == 64) {
+                        var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
+                        alert("Fim de jogo! O vencedor foi " + vencedor)
+                    } else {
+                        if(this.state.pontosB == 0) {
+                            alert("Fim de jogo! O vencedor foi Preto")
+                        } else {
+                            if(this.state.pontosP == 0) {
+                                alert("Fim de jogo! O vencedor foi Branco")
+                            }
+                        }
+                    }
+                
+                },1200);
             }
-            
             // console.log(this.state.tabuleiro);
         }, (err) => {
             console.log(err);

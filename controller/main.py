@@ -1,10 +1,11 @@
 from Tabuleiro import Tabuleiro
 from Arvore import Arvore
+from MatrizPesos import MatrizPesos
 import json
 import sys
 
-
 def main(args):
+    matrizPesos = MatrizPesos(8)
     tabuleiro = Tabuleiro(8)
     tabuleiro.lerTabuleiro(args["tabuleiro"])
     resultadoJogada = tabuleiro.fazJogada(args["jogador"], int(args["posicaoI"]), int(args["posicaoJ"]))
@@ -15,7 +16,7 @@ def main(args):
     jogoTerminou = True if (tabuleiro.pontuacao["B"] + tabuleiro.pontuacao["P"] == 64) else False
     if(resultadoJogada and not jogoTerminou):
         outroJogador = "P" if args["jogador"] == "B" else "B"
-        arvore = Arvore(outroJogador, 4)
+        arvore = Arvore(outroJogador, 4, matrizPesos)
         arvore.adicionaNoh(tabuleiro)
         jogada = arvore.preveJogada()
         if(jogada != None):

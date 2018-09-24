@@ -1,11 +1,14 @@
 from Noh import Noh
 from Tabuleiro import Tabuleiro
+from MatrizPesos import MatrizPesos
+
 class Arvore:
-    def __init__(self, jogador, nivel):
+    def __init__(self, jogador, nivel, matrizPesos):
         self.raiz = None
         self.jogador = jogador
         self.oponente = "B" if self.jogador == "P" else "P"
         self.nivel = nivel
+        self.matrizPesos = matrizPesos
 
     def adicionaNoh(self, tabuleiro, pai = None):
         novo = Noh(tabuleiro)
@@ -35,7 +38,7 @@ class Arvore:
             inserido = self.insereNaPosicao(jogadasOrdenadas, posicoes, resultadoPontos)
             if(inserido):
                 return
-            if(len(jogadasOrdenadas) < 8):
+            if(len(jogadasOrdenadas) < 10):
                 jogadasOrdenadas.append({posicoes: resultadoPontos})
             return
 
@@ -44,7 +47,8 @@ class Arvore:
     def escolheMelhoresJogadas(self, jogador, oponente, atual, jogadas):
         jogadasOrdenadas = []
         for posicoes in jogadas:
-            novaPontuacaoJogador = atual.tabuleiro.pontuacao[jogador] + len(jogadas[posicoes]) + 1
+            pesoPosicao = self.matrizPesos.getPeso(posicoes[0], posicoes[1])
+            novaPontuacaoJogador = atual.tabuleiro.pontuacao[jogador] + len(jogadas[posicoes]) + pesoPosicao
             novaPontuacaoOponente = atual.tabuleiro.pontuacao[oponente] - len(jogadas[posicoes])
             resultadoPontos = novaPontuacaoJogador - novaPontuacaoOponente
             self.insereOrdenado(posicoes, jogadasOrdenadas, resultadoPontos)
@@ -72,7 +76,7 @@ class Arvore:
 
     def encontraInicioDaJogada(self, noh):
         if(noh.pai == None):
-            return None
+            return noh
         if(noh.pai.pai == None):
             return noh
         
@@ -82,7 +86,9 @@ class Arvore:
     def preveJogada(self):
         self.geraArvoreDePossibilidades(self.raiz, 0)
         melhorFolha = self.escolheMelhorFolha(self.raiz)
-        return self.encontraInicioDaJogada(melhorFolha).tabuleiro
+        print(melhorFolha.tabuleiro)
+        jogada = self.encontraInicioDaJogada(melhorFolha)
+        return jogada.tabuleiro
 
 
 
