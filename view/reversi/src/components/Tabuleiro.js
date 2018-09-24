@@ -13,6 +13,7 @@ export default class Tabuleiro extends React.Component{
             tabuleiro: [],
             pontosP: 2,
             pontosB: 2,
+            pronto: true,
         };
 
         this.renderTabuleiro=this.renderTabuleiro.bind(this)
@@ -100,7 +101,10 @@ export default class Tabuleiro extends React.Component{
     }
 
     handleChildClick(id) {
-
+        if(!this.state.pronto) {
+           return;
+        }
+        this.setState({pronto: false});
         var posicoes = id.split("-")
         var obj = this.exportar(posicoes[0], posicoes[1], this.state.pretoProx)
         axios.post('http://localhost:5000/jogar', obj).then((response) => {
@@ -148,15 +152,17 @@ export default class Tabuleiro extends React.Component{
                             }
                         }
                     }
-                
-                },1200);
+                    this.setState({pronto: true});
+                },800);
+            } else {
+                this.setState({pronto: true});
             }
             // console.log(this.state.tabuleiro);
         }, (err) => {
             console.log(err);
         });
         //console.log(this.state.tabuleiro);
-        
+    
     }
     render(){
         return(

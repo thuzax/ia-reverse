@@ -16,7 +16,7 @@ def main(args):
     jogoTerminou = True if (tabuleiro.pontuacao["B"] + tabuleiro.pontuacao["P"] == 64) else False
     if(resultadoJogada and not jogoTerminou):
         outroJogador = "P" if args["jogador"] == "B" else "B"
-        arvore = Arvore(outroJogador, 4, matrizPesos)
+        arvore = Arvore(outroJogador, 5, matrizPesos)
         arvore.adicionaNoh(tabuleiro)
         jogada = arvore.preveJogada()
         if(jogada != None):

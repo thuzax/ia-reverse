@@ -22,15 +22,15 @@ class MatrizPesos:
         
 
 
-        self.matrizPesos[0][0] += 10
-        self.matrizPesos[0][self.tamanho - 1] += 10
-        self.matrizPesos[self.tamanho - 1][0] += 10
-        self.matrizPesos[self.tamanho - 1][self.tamanho - 1] += 10
+        self.matrizPesos[0][0] += 20
+        self.matrizPesos[0][self.tamanho - 1] += 20
+        self.matrizPesos[self.tamanho - 1][0] += 20
+        self.matrizPesos[self.tamanho - 1][self.tamanho - 1] += 20
         
-        self.matrizPesos[1][1] = -7
-        self.matrizPesos[1][self.tamanho - 2] = -7
-        self.matrizPesos[self.tamanho - 2][1] = -7
-        self.matrizPesos[self.tamanho - 2][self.tamanho - 2] = -7
+        self.matrizPesos[1][1] = -10
+        self.matrizPesos[1][self.tamanho - 2] = -10
+        self.matrizPesos[self.tamanho - 2][1] = -10
+        self.matrizPesos[self.tamanho - 2][self.tamanho - 2] = -10
 
         
 

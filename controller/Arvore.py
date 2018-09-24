@@ -38,7 +38,7 @@ class Arvore:
             inserido = self.insereNaPosicao(jogadasOrdenadas, posicoes, resultadoPontos)
             if(inserido):
                 return
-            if(len(jogadasOrdenadas) < 10):
+            if(len(jogadasOrdenadas) < 6):
                 jogadasOrdenadas.append({posicoes: resultadoPontos})
             return
 
@@ -108,7 +108,7 @@ class Arvore:
             novoTabuleiro = atual.tabuleiro.copy()
             novoTabuleiro.fazJogada(jogadorAtual, jogada[0], jogada[1])
             self.adicionaNoh(novoTabuleiro, atual)
-
+        
         for filho in atual.filhos:
             resultado = self.geraArvoreDePossibilidades(filho, iteracao + 1)
 
