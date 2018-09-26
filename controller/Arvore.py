@@ -9,6 +9,7 @@ class Arvore:
         self.oponente = "B" if self.jogador == "P" else "P"
         self.nivel = nivel
         self.matrizPesos = matrizPesos
+        self.folhas = []
 
     def adicionaNoh(self, tabuleiro, pai = None):
         novo = Noh(tabuleiro)
@@ -43,7 +44,6 @@ class Arvore:
             return
 
 
-
     def escolheMelhoresJogadas(self, jogador, oponente, atual, jogadas):
         jogadasOrdenadas = []
         for posicoes in jogadas:
@@ -59,17 +59,14 @@ class Arvore:
             melhoresJogadas[chave] = jogadas[chave]
         return melhoresJogadas
 
-    def escolheMelhorFolha(self, noh):
-        if(len(noh.filhos) == 0):
-            return noh
-
-        melhor = None
-        for filho in noh.filhos:
-            melhorFilho = self.escolheMelhorFolha(filho)
-            if(melhor == None):
-                melhor = melhorFilho
-            elif(melhor.ganho < melhorFilho.ganho):
-                melhor = melhorFilho
+    def escolheMelhorFolha(self):
+        if(len(self.folhas) == 0):
+            return self.raiz
+        
+        melhor = self.folhas[0]
+        for i in range(1, len(self.folhas)):
+            if(melhor.ganho < self.folhas[i].ganho):
+                melhor = self.folhas[i]
         return melhor
         
 
@@ -79,14 +76,12 @@ class Arvore:
             return noh
         if(noh.pai.pai == None):
             return noh
-        
         return self.encontraInicioDaJogada(noh.pai)
         
 
     def preveJogada(self):
         self.geraArvoreDePossibilidades(self.raiz, 0)
-        melhorFolha = self.escolheMelhorFolha(self.raiz)
-        print(melhorFolha.tabuleiro)
+        melhorFolha = self.escolheMelhorFolha()
         jogada = self.encontraInicioDaJogada(melhorFolha)
         return jogada.tabuleiro
 
@@ -94,6 +89,7 @@ class Arvore:
 
     def geraArvoreDePossibilidades(self, atual, iteracao):
         if(iteracao == self.nivel):
+            self.folhas.append(atual)
             return
         
         jogadorAtual = self.jogador
@@ -104,18 +100,22 @@ class Arvore:
         
         jogadas = atual.tabuleiro.pegaJogadasPossiveis(jogadorAtual, oponenteAtual)
         melhoresJogadas = self.escolheMelhoresJogadas(jogadorAtual, oponenteAtual, atual, jogadas)
-        for jogada in melhoresJogadas:
+        #por aqui
+        if(len(jogadas) == 0):
             novoTabuleiro = atual.tabuleiro.copy()
-            novoTabuleiro.fazJogada(jogadorAtual, jogada[0], jogada[1])
             self.adicionaNoh(novoTabuleiro, atual)
+        else:
+            for jogada in melhoresJogadas:
+                novoTabuleiro = atual.tabuleiro.copy()
+                novoTabuleiro.fazJogada(jogadorAtual, jogada[0], jogada[1])
+                self.adicionaNoh(novoTabuleiro, atual)
         
         for filho in atual.filhos:
-            resultado = self.geraArvoreDePossibilidades(filho, iteracao + 1)
+            self.geraArvoreDePossibilidades(filho, iteracao + 1)
 
 
         # jogada = self.escolheJogada(jogadorAtual, oponenteAtual, atual)
             
-
 
 
     def __str__(self):

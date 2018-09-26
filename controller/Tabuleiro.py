@@ -65,6 +65,35 @@ class Tabuleiro:
         self.pontuacao[jogador] += 1
         self.pontuacao[outroJogador] -= 1
 
+    def existeUmaJogada(self, jogador, oponente):
+        for peca in self.posicaoPecas[jogador]:
+            resultadoJogada = self.pegaPecasViradasSubindo(jogador, oponente, peca[0], peca[1])
+            if(resultadoJogada != None):
+                return True
+            resultadoJogada = self.pegaPecasViradasDescendo(jogador, oponente, peca[0], peca[1])
+            if(resultadoJogada != None):
+                return True
+            resultadoJogada = self.pegaPecasViradasEsquerda(jogador, oponente, peca[0], peca[1])
+            if(resultadoJogada != None):
+                return True
+            resultadoJogada = self.pegaPecasViradasDireita(jogador, oponente, peca[0], peca[1])
+            if(resultadoJogada != None):
+                return True
+            resultadoJogada = self.pegaPecasViradasDiagonalDescendoDireita(jogador, oponente, peca[0], peca[1])
+            if(resultadoJogada != None):
+                return True
+            resultadoJogada = self.pegaPecasViradasDiagonalDescendoEsquerda(jogador, oponente, peca[0], peca[1])
+            if(resultadoJogada != None):
+                return True
+            resultadoJogada = self.pegaPecasViradasDiagonalSubindoDireita(jogador, oponente, peca[0], peca[1])
+            if(resultadoJogada != None):
+                return True
+            resultadoJogada = self.pegaPecasViradasDiagonalSubindoEsquerda(jogador, oponente, peca[0], peca[1])
+            if(resultadoJogada != None):
+                return True
+        return False
+        
+
 
     def fazJogada(self, jogador, linha, coluna):
         outroJogador = "P" if(jogador == "B") else "B"
@@ -85,8 +114,7 @@ class Tabuleiro:
         for posicoesPeca in resultadoJogada[(linha, coluna)]:
             self.viraPecas(jogador, outroJogador, posicoesPeca)
 
-        resultadoJogada = self.pegaJogadasPossiveis(outroJogador, jogador)
-        if(len(resultadoJogada) <= 0):
+        if(not self.existeUmaJogada(outroJogador, jogador)):
             return False
 
         return True
