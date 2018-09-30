@@ -22,7 +22,8 @@ class Arvore:
 
     def insereNaPosicao(self, jogadasOrdenadas, posicoes, resultadoPontos):
         for i in range(len(jogadasOrdenadas)):
-            pontuacaoJogada = list(jogadasOrdenadas[i].items())[0]
+            pontuacaoJogada = list(jogadasOrdenadas[i].values())[0]
+            print(pontuacaoJogada)
             if(pontuacaoJogada < resultadoPontos):
                 jogadasOrdenadas.insert(i, {posicoes: resultadoPontos})
                 return True
