@@ -117,9 +117,13 @@ export default class Tabuleiro extends React.Component{
             this.setState({pontosP: response.data.jogador.pontuacao.P})
             var jogoFinalizado = false;
             if(this.state.pontosB + this.state.pontosP == 64) {
-                var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
+                if(this.state.pontosB == this.state.pontosP) {
+                    alert("Fim de jogo! Empate!");
+                } else {
+                    var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
+                    alert("Fim de jogo! O vencedor foi " + vencedor)
+                }
                 jogoFinalizado = true;
-                alert("Fim de jogo! O vencedor foi " + vencedor)
             } else {
                 if(this.state.pontosB == 0) {
                     jogoFinalizado = true;
@@ -141,14 +145,21 @@ export default class Tabuleiro extends React.Component{
                     this.setState({pontosB: response.data.ia.pontuacao.B})
                     this.setState({pontosP: response.data.ia.pontuacao.P})
                     if(this.state.pontosB + this.state.pontosP == 64) {
-                        var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
-                        alert("Fim de jogo! O vencedor foi " + vencedor)
+                        if(this.state.pontosB == this.state.pontosP) {
+                            alert("Fim de jogo! Empate!");
+                        } else {
+                            var vencedor = (this.state.pontosB > this.state.pontosP) ? "Branco" : "Preto"
+                            alert("Fim de jogo! O vencedor foi " + vencedor);
+                        }
+                        jogoFinalizado = true;
                     } else {
                         if(this.state.pontosB == 0) {
                             alert("Fim de jogo! O vencedor foi Preto")
+                            jogoFinalizado = true;
                         } else {
                             if(this.state.pontosP == 0) {
                                 alert("Fim de jogo! O vencedor foi Branco")
+                                jogoFinalizado = true;
                             }
                         }
                     }
