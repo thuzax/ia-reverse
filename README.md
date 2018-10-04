@@ -1,3 +1,5 @@
+GitHub: https://github.com/thuzax/ia-reverse
+
 É necessário ter instalado o "npm", o "flask" e o "flask-cors"
 
 No diretório view/reversi/ use (no terminal) os comandos:
@@ -15,3 +17,4 @@ No diretório controller utilize os comandos:
 Recomendamos que utilize o chrome e, caso ele não seja seu navegador padrão acesse o seguinte endereço e porta:
 
 	127.0.0.1:3000
+
